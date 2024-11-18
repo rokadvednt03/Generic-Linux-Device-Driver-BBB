@@ -1,14 +1,20 @@
-MPU6050 I2C Device Driver
-This project implements a Linux kernel device driver for the MPU6050, an accelerometer and gyroscope sensor. The driver enables communication with the sensor over the I2C bus, allowing data acquisition and device control.
 
-Features
-Supports MPU6050 communication over I2C.
-Kernel-space and user-space interaction through device files.
-Configurable device tree overlay for easy integration with embedded platforms.
-Tested on Beaglebone Black with Linux Kernel 6.8.0.
-Project Structure
-plaintext
-Copy code
+# MPU6050 I2C Device Driver
+
+This project implements a Linux kernel device driver for the **MPU6050**, an accelerometer and gyroscope sensor. The driver facilitates communication with the sensor over the I2C bus, enabling data acquisition and device control.
+
+---
+
+## Features
+- Communicates with the MPU6050 sensor over I2C.
+- Provides kernel-space and user-space interaction through device files.
+- Includes a device tree overlay for straightforward hardware integration.
+- Tested on **Beaglebone Black** with Linux Kernel **6.8.0**.
+
+---
+
+## Project Structure
+```plaintext
 .
 ├── src/
 │   ├── mpu6050_driver.c   # Kernel module source code
@@ -17,64 +23,83 @@ Copy code
 │   └── mpu6050_test.c     # User-space test application
 ├── README.md              # Project documentation
 └── Makefile               # Makefile for compiling the driver
-Requirements
-Hardware: Beaglebone Black (or similar platform) with MPU6050 sensor.
-Software:
-Linux Kernel 6.8.0 (or compatible).
-Cross-compilation toolchain for ARM.
-Device Tree Compiler (DTC).
-Setup Instructions
-1. Compile the Kernel Module
-bash
-Copy code
+```
+
+---
+
+## Requirements
+### Hardware
+- Beaglebone Black (or a similar embedded platform).
+- MPU6050 sensor module.
+
+### Software
+- Linux Kernel 6.8.0 (or compatible).
+- Cross-compilation toolchain for ARM.
+- Device Tree Compiler (DTC).
+- GCC for compiling user-space applications.
+
+---
+
+## Setup Instructions
+
+### 1. Compile the Kernel Module
+Navigate to the `src/` directory and compile the kernel module:
+```bash
 cd src
 make
-This generates the mpu6050.ko kernel module.
+```
+This will generate the `mpu6050.ko` kernel module.
 
-2. Load the Kernel Module
-bash
-Copy code
+### 2. Load the Kernel Module
+Insert the module into the kernel:
+```bash
 sudo insmod mpu6050.ko
-3. Create the Device Node
-Find the major number assigned by the driver using dmesg, and create the device file:
+```
 
-bash
-Copy code
+### 3. Create the Device Node
+Find the major number assigned to the driver using `dmesg`. Then, create the device node:
+```bash
 sudo mknod /dev/mpu6050 c <major_number> 0
-4. Load the Device Tree Overlay
-Compile the device tree source file and load it:
+```
 
-bash
-Copy code
-sudo dtc -I dts -O dtb -o mpu6050-device.dtb mpu6050-device.dts
+### 4. Load the Device Tree Overlay
+Compile the device tree source file and copy it to the boot directory:
+```bash
+sudo dtc -I dts -O dtb -o mpu6050-device.dtb mpu6050_device.dts
 sudo cp mpu6050-device.dtb /boot/
-Reboot the system to apply the overlay.
+```
+Reboot the system to apply the overlay:
+```bash
+sudo reboot
+```
 
-5. Test the Driver
-Compile and run the user-space test application:
-
-bash
-Copy code
+### 5. Test the Driver
+Compile the user-space test application:
+```bash
 gcc -o mpu6050_test test/mpu6050_test.c
+```
+Run the application to interact with the MPU6050 driver:
+```bash
 sudo ./mpu6050_test
-Usage
-User-Space Application
-The user-space application interacts with the driver via the /dev/mpu6050 interface. Use it to:
+```
 
-Read accelerometer and gyroscope data.
-Monitor raw data for further processing.
-Troubleshooting
-Driver Fails to Load: Check the kernel log for errors using dmesg.
-I2C Device Not Found: Ensure the MPU6050 is connected correctly to the I2C bus.
-No Device Node: Verify the mknod command with the correct major number.
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your enhancements.
+---
 
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+## Usage
+The driver interacts with the MPU6050 sensor using the `/dev/mpu6050` interface. A sample test application demonstrates how to:
+- Read raw accelerometer and gyroscope data.
+- Perform basic interactions with the device.
 
-Contact
-For any questions or feedback, feel free to contact me:
+The `/dev/mpu6050` file allows reading raw data, which can be processed further as needed.
 
-Author: Vedant Ashokbhai Rokad
-Email: [Your Email Address]
+---
+
+## Troubleshooting
+1. **Driver Fails to Load**: Check the kernel log using `dmesg` for error details.
+2. **I2C Device Not Found**: Verify the wiring of the MPU6050 to the I2C bus.
+3. **No Device Node**: Ensure you executed the `mknod` command with the correct major number from `dmesg`.
+
+---
+
+## Contributing
+Contributions are welcome! If you'd like to improve this project, please fork the repository and submit a pull request. Any enhancements, bug fixes, or feature additions are appreciated.
