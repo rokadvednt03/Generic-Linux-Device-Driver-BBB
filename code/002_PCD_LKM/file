@@ -1,0 +1,13 @@
+My name is vedant A. Rokad
+
+JTAG (Joint Test Access Group) was made initially to Test pinout of integrated circuit (IC) and to spot faults on those pins. Overtime this become a standard by 1990 (IEEE 1149.1), main focus was Boundary scan testing by toggling Pins through JTAG interface to verify interconnection and sport faults on Integrated circuit, Overtime JTAG was used to build on top a way to test internal logic of the semiconductor product and then to create debug interface used to examine the processor/system internal states.
+
+Intel was the first to introduce JTAG as a way to debug their processors, and this was adopted by other companies and processors architecture like PowerPC (IBM), ARM processors, MIPS … .
+
+TMS (Test Mode Selection): JTAG has an internal state machine already described in detail as part of the standard specification IEEE 1149.1 (https://grouper.ieee.org/groups/1149/1/), this state machine has multiple intermediate state and the switch from one state to another requires predefined input sequences (consist of set of 0s and 1s) coming from TMS and sampled using the TCK line (on each rising edge of the input clock on TCK line).
+
+TDI (Test Data Input): This line used mainly as input line of sequence to be used either to move JTAG state machine or as test sequence for the different analog/digital logic of the system.
+
+TRST (Test Reset): This line used to reset the JTAG internal state machine usually asynchronous, the line is active low so by default should be maintained high with some external pull-up. This pin is optional means in case of absence we can reset the JTAG state machine via TMS/TCK lines by moving the JTAG state machine to RESET state.
+
+ 
