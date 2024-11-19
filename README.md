@@ -115,5 +115,5 @@ Any enhancements, bug fixes, or feature additions are appreciated.
 ---
 
 ## Authors
-- **Vedant** - Project Implementation
-- **21BEC023 & 21BEC106** - Documentation and Testing
+- **Vedant A. Rokad - 21BEC106** 
+- **Deep Lad - 21BEC023**
