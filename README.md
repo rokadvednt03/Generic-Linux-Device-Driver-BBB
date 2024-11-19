@@ -18,7 +18,7 @@ The driver facilitates communication with the sensor over the I2C bus, enabling 
 ## Project Structure
 ```plaintext
 .
-├── code/
+├── Workspace/
 │   ├── 001_HELLO_WORLD_LKM/         # Basic Loadable Kernel Module Example
 │   │   ├── 003_BBB.c                # Source code for Hello World LKM
 │   │   └── Makefile                 # Makefile for compiling Hello World LKM
