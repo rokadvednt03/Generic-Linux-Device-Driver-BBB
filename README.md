@@ -1,7 +1,8 @@
 
 # MPU6050 I2C Device Driver
 
-This project implements a Linux kernel device driver for the **MPU6050**, an accelerometer and gyroscope sensor. The driver facilitates communication with the sensor over the I2C bus, enabling data acquisition and device control.
+This project implements a Linux kernel device driver for the **MPU6050**, an accelerometer and gyroscope sensor. 
+The driver facilitates communication with the sensor over the I2C bus, enabling data acquisition and device control.
 
 ---
 
@@ -9,6 +10,7 @@ This project implements a Linux kernel device driver for the **MPU6050**, an acc
 - Communicates with the MPU6050 sensor over I2C.
 - Provides kernel-space and user-space interaction through device files.
 - Includes a device tree overlay for straightforward hardware integration.
+- Modularized into distinct applications for flexibility.
 - Tested on **Beaglebone Black** with Linux Kernel **6.8.0**.
 
 ---
@@ -16,13 +18,27 @@ This project implements a Linux kernel device driver for the **MPU6050**, an acc
 ## Project Structure
 ```plaintext
 .
-├── src/
-│   ├── mpu6050_driver.c   # Kernel module source code
-│   └── mpu6050_device.dts # Device tree overlay for MPU6050
-├── test/
-│   └── mpu6050_test.c     # User-space test application
-├── README.md              # Project documentation
-└── Makefile               # Makefile for compiling the driver
+├── code/
+│   ├── 001_HELLO_WORLD_LKM/         # Basic Loadable Kernel Module Example
+│   │   ├── 003_BBB.c                # Source code for Hello World LKM
+│   │   └── Makefile                 # Makefile for compiling Hello World LKM
+│   ├── 002_PCD_LKM/                 # Pseudo Character Device Driver Example
+│   │   ├── 004Char_BBB.c            # Source code for PCD LKM
+│   │   ├── file                     # Supporting test file for PCD
+│   │   └── Makefile                 # Makefile for compiling PCD LKM
+│   ├── 003_MPU6050_Application/     # User-space MPU6050 Application
+│   │   ├── main.c                   # User-space application main file
+│   │   ├── makefile                 # Makefile for compiling user-space application
+│   │   ├── mpu6050.c                # Helper functions for MPU6050
+│   │   └── mpu6050.h                # Header file for MPU6050 helper functions
+│   └── 004_MPU6050_LKM/             # MPU6050 Kernel Driver
+│       ├── Makefile                 # Makefile for compiling MPU6050 LKM
+│       ├── mpu6050.c                # Kernel driver source code
+│       └── mpu6050.h                # Kernel driver header file
+├── Document/
+│   ├── 21BEC023_21BEC106_Minor Project Final Review.pptx  # Final Review Presentation
+│   └── 21BEC023_21BEC106_Minor_Project_Report.pdf         # Final Project Report
+└── README.md                                              # Project documentation
 ```
 
 ---
@@ -42,55 +58,46 @@ This project implements a Linux kernel device driver for the **MPU6050**, an acc
 
 ## Setup Instructions
 
-### 1. Compile the Kernel Module
-Navigate to the `src/` directory and compile the kernel module:
+### 1. Compile and Test Kernel Modules
+#### Hello World LKM
+Navigate to the `001_HELLO_WORLD_LKM/` directory:
 ```bash
-cd src
+cd code/001_HELLO_WORLD_LKM
 make
+sudo insmod hello_world.ko
+sudo rmmod hello_world
 ```
-This will generate the `mpu6050.ko` kernel module.
 
-### 2. Load the Kernel Module
-Insert the module into the kernel:
+#### Pseudo Character Device LKM
+Navigate to the `002_PCD_LKM/` directory:
 ```bash
+cd code/002_PCD_LKM
+make
+sudo insmod pcd.ko
+sudo rmmod pcd
+```
+
+#### MPU6050 Kernel Module
+Navigate to the `004_MPU6050_LKM/` directory and compile the kernel module:
+```bash
+cd code/004_MPU6050_LKM
+make
 sudo insmod mpu6050.ko
 ```
 
-### 3. Create the Device Node
+### 2. Create the Device Node
 Find the major number assigned to the driver using `dmesg`. Then, create the device node:
 ```bash
 sudo mknod /dev/mpu6050 c <major_number> 0
 ```
 
-### 4. Load the Device Tree Overlay
-Compile the device tree source file and copy it to the boot directory:
+### 3. Compile the User-Space Application
+Navigate to the `003_MPU6050_Application/` directory:
 ```bash
-sudo dtc -I dts -O dtb -o mpu6050-device.dtb mpu6050_device.dts
-sudo cp mpu6050-device.dtb /boot/
+cd code/003_MPU6050_Application
+make
+sudo ./mpu6050_app
 ```
-Reboot the system to apply the overlay:
-```bash
-sudo reboot
-```
-
-### 5. Test the Driver
-Compile the user-space test application:
-```bash
-gcc -o mpu6050_test test/mpu6050_test.c
-```
-Run the application to interact with the MPU6050 driver:
-```bash
-sudo ./mpu6050_test
-```
-
----
-
-## Usage
-The driver interacts with the MPU6050 sensor using the `/dev/mpu6050` interface. A sample test application demonstrates how to:
-- Read raw accelerometer and gyroscope data.
-- Perform basic interactions with the device.
-
-The `/dev/mpu6050` file allows reading raw data, which can be processed further as needed.
 
 ---
 
@@ -102,4 +109,11 @@ The `/dev/mpu6050` file allows reading raw data, which can be processed further 
 ---
 
 ## Contributing
-Contributions are welcome! If you'd like to improve this project, please fork the repository and submit a pull request. Any enhancements, bug fixes, or feature additions are appreciated.
+Contributions are welcome! If you'd like to improve this project, please fork the repository and submit a pull request. 
+Any enhancements, bug fixes, or feature additions are appreciated.
+
+---
+
+## Authors
+- **Vedant** - Project Implementation
+- **21BEC023 & 21BEC106** - Documentation and Testing
